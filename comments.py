@@ -8,12 +8,18 @@ from time import sleep
 
 url = "http://www.reddit.com/r/news/comments/wyo6w/anaheim_pd_fires_on_crowd_of_women_and_small/"
 
-def addToSubComments(subComments, id_c, i):
+def addToSubComments(subComments, id_c, i, length):
     print "it kind of worked"
     sleep(3)
-    subUrl = url + id_c
+    subUrl = url + id_c["data"]["id"]
     bd = getJson(subUrl)
-    subComments[i] = bd[1]["data"]["children"]
+    new_comm_list = bd[1]["data"]["children"]
+    
+    for j in range(len(new_comm_list)):
+        
+        subComments[i] = new_comm_list[j]
+        
+        print len(subComments)
 
 
 
@@ -21,18 +27,17 @@ def addToSubComments(subComments, id_c, i):
 def buildTree(subtree):
 
     subComments = subtree["data"]["children"]
-    
-    for i in range(len(subComments)):
-        
-        if subComments[i].get("data").get("children") and type(subComments[i]["data"]["children"].get()) == unicode:
+    length = range(len(subComments))
+    for i in length:
+        if subComments[i]["data"].get("replies") is None and subComments[i]["data"].get("children") is not None:
             #embed()
-            addToSubComments(subComments, subComments[i], i)
-        
+            addToSubComments(subComments, subComments[i], i, length)
+            buildTree(subtree)
+            break
         print i
         #embed()
-        if subComments[i]["data"]["replies"] != "":
+        if subComments[i]["data"].get("replies") is not None and subComments[i]["data"]["replies"] != "":
             buildTree(subComments[i]["data"]["replies"])
-
 
 
 
