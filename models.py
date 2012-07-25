@@ -2,7 +2,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, create_engine, String, ForeignKey, DATETIME
 from sqlalchemy.orm import sessionmaker, relationship, backref
 
-engine = create_engine("sqlite:///sweep.db", echo=True)
+engine = create_engine("sqlite:///sweep.db", echo=False)
 
 Base = declarative_base()
 

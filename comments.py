@@ -6,7 +6,7 @@ from IPython import embed
 from models import Comment, User, session
 from time import sleep
 
-url = "http://www.reddit.com/r/gaming/comments/vnwl7/skyrim_logic/"
+url = "http://www.reddit.com/r/science/comments/x1mlj/frozen_sperm_offer_a_lifeline_for_coral/"
 
 def addToSubComments(subComments, id_c, i, length):
     sleep(1)
@@ -86,11 +86,12 @@ def printComments(subtree, i):
     except:
         pass
 
-    i += 2
+    #i += 2
     for j in subComments:
-        print i*" ", j["data"]["body"], "\n"
+        #print i*" ", j["data"]["body"], "\n"
         try:
             printComments(j["data"]["replies"], i)
+            i += 1
         except:
             pass
      
@@ -113,9 +114,11 @@ if __name__ == "__main__":
     c = bd[1]
     parent = Comment(user_name = "Ale and Nick", upvotes = int(9999999))
     
-    buildTree(c)
+    #buildTree(c)
+    i = 0
     addToDatabase(parent, c, 0)
     session.add(parent)
     session.commit()
-   # printComments(c, 0)
+    printComments(c, i)
+    print i
 
