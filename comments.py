@@ -6,7 +6,9 @@ from IPython import embed
 from models import Comment, User, session
 from time import sleep
 
-url = "http://www.reddit.com/r/science/comments/x1mlj/frozen_sperm_offer_a_lifeline_for_coral/"
+c1 = 0 #counter for counting number of posts
+
+
 
 def addToSubComments(subComments, id_c, i, length):
     sleep(1)
@@ -79,7 +81,6 @@ def addToDatabase(parent, subtree, i):
 
     """
 
-
 def printComments(subtree, i):
     try:
         subComments = subtree["data"]["children"]
@@ -88,10 +89,14 @@ def printComments(subtree, i):
 
     #i += 2
     for j in subComments:
-        #print i*" ", j["data"]["body"], "\n"
+        #print i*" ",j["data"]["body"], "\n"
+        
+        global c1
+        c1 += 1
+        print c1
+        print j["data"]["body"], "\n"
         try:
             printComments(j["data"]["replies"], i)
-            i += 1
         except:
             pass
      
@@ -103,22 +108,32 @@ def getJson(url):
     return json.loads(rawText)
     
 
-
-
-if __name__ == "__main__":
-    
-    p = pprint.PrettyPrinter(indent=4)
-    
-       
+def scrapeThread(url)
     bd = getJson(url)
     c = bd[1]
     parent = Comment(user_name = "Ale and Nick", upvotes = int(9999999))
-    
-    #buildTree(c)
-    i = 0
+    addToDatabase(parent, c, 0)
+
+
+   
+
+"""
+#if __name__ == "__main__":
+    bd = getJson(url)
+    c = bd[1]
+    parent = Comment(user_name = "Ale and Nick", upvotes = int(9999999))
+    addToDatabase(parent, c, 0)
+
+
+    buildTree(c)
     addToDatabase(parent, c, 0)
     session.add(parent)
     session.commit()
     printComments(c, i)
-    print i
+    global c1
+    print c1
+
+   
+    p = pprint.PrettyPrinter(indent=4)
+"""    
 
