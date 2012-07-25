@@ -6,11 +6,10 @@ from IPython import embed
 from models import Comment, User, session
 from time import sleep
 
-url = "http://www.reddit.com/r/news/comments/wyo6w/anaheim_pd_fires_on_crowd_of_women_and_small/"
+url = "http://www.reddit.com/r/gaming/comments/vnwl7/skyrim_logic/"
 
 def addToSubComments(subComments, id_c, i, length):
-    print "it kind of worked"
-    sleep(3)
+    sleep(1)
     subUrl = url + id_c["data"]["id"]
     bd = getJson(subUrl)
     new_comm_list = bd[1]["data"]["children"]
@@ -34,7 +33,6 @@ def buildTree(subtree):
             addToSubComments(subComments, subComments[i], i, length)
             buildTree(subtree)
             break
-        print i
         #embed()
         if subComments[i]["data"].get("replies") is not None and subComments[i]["data"]["replies"] != "":
             buildTree(subComments[i]["data"]["replies"])
@@ -60,7 +58,7 @@ def addToDatabase(parent, subtree, i):
         comment.date_of_last_sweep = datetime.now()
         comment.parent = parent
         session.add(comment)
-        print i    
+        print i
         #embed()
         #   try:
 
@@ -91,7 +89,6 @@ def printComments(subtree, i):
     i += 2
     for j in subComments:
         print i*" ", j["data"]["body"], "\n"
-
         try:
             printComments(j["data"]["replies"], i)
         except:
@@ -117,8 +114,8 @@ if __name__ == "__main__":
     parent = Comment(user_name = "Ale and Nick", upvotes = int(9999999))
     
     buildTree(c)
-    #addToDatabase(parent, c, 0)
-    #session.add(parent)
-    #session.commit()
-    printComments(c, 0)
+    addToDatabase(parent, c, 0)
+    session.add(parent)
+    session.commit()
+   # printComments(c, 0)
 
