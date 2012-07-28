@@ -10,7 +10,7 @@ c1 = 0 #counter for counting number of posts
 
 
 
-def addToSubComments(subComments, id_c, i, length):
+def addToSubComments(url, subComments, id_c, i, length):
     sleep(1)
     subUrl = url + id_c["data"]["id"]
     bd = getJson(subUrl)
@@ -20,24 +20,24 @@ def addToSubComments(subComments, id_c, i, length):
         
         subComments[i] = new_comm_list[j]
         
-        print len(subComments)
+        #print len(subComments)
 
 
 
 
-def buildTree(subtree):
+def buildTree(url, subtree):
 
     subComments = subtree["data"]["children"]
     length = range(len(subComments))
     for i in length:
         if subComments[i]["data"].get("replies") is None and subComments[i]["data"].get("children") is not None:
             #embed()
-            addToSubComments(subComments, subComments[i], i, length)
-            buildTree(subtree)
+            addToSubComments(url, subComments, subComments[i], i, length)
+            buildTree(url, subtree)
             break
         #embed()
         if subComments[i]["data"].get("replies") is not None and subComments[i]["data"]["replies"] != "":
-            buildTree(subComments[i]["data"]["replies"])
+            buildTree(url, subComments[i]["data"]["replies"])
 
 
 
@@ -48,7 +48,8 @@ def addToDatabase(parent, subtree, i):
     
     subComments = subtree["data"]["children"]
     if len(subComments) == 0:
-        print "List EMPTY"
+        pass
+        #print "List EMPTY"
     #except:
     #    pass
 
@@ -60,12 +61,13 @@ def addToDatabase(parent, subtree, i):
         comment.date_of_last_sweep = datetime.now()
         comment.parent = parent
         session.add(comment)
-        print i
+        #print i
         #embed()
         #   try:
 
         if j["data"]["replies"] == "":
-            print "Dict Empty"
+            pass
+            #print "Dict Empty"
             #print type(j["data"]["replies"])
 
         else:
@@ -108,11 +110,15 @@ def getJson(url):
     return json.loads(rawText)
     
 
-def scrapeThread(url)
+def scrapeThread(url, postName):
     bd = getJson(url)
     c = bd[1]
-    parent = Comment(user_name = "Ale and Nick", upvotes = int(9999999))
+    parent = Comment(user_name = postName)
+    buildTree(url, c)
     addToDatabase(parent, c, 0)
+    
+    session.add(parent)
+    session.commit()
 
 
    
@@ -129,6 +135,10 @@ def scrapeThread(url)
     addToDatabase(parent, c, 0)
     session.add(parent)
     session.commit()
+    p = pprint.PrettyPrinter(indent=4)
+    p = pprint.PrettyPrinter(indent=4)
+    p = pprint.PrettyPrinter(indent=4)
+    p = pprint.PrettyPrinter(indent=4)
     printComments(c, i)
     global c1
     print c1
