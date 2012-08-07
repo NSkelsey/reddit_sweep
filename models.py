@@ -19,9 +19,19 @@ class Comment(Base):
                 )
     user_name = Column(String, ForeignKey("user_table.name"))
     user = relationship("User", backref=backref("comments"))
-    post_id = Column(String, ForeignKey("post_table.id"))
+    post_id = Column(Integer, ForeignKey("post_table.id"))
     post = relationship("Post", backref=backref("comments"))
     date_of_last_sweep = Column(DATETIME)
+    weight = Column(Integer)
+
+
+
+    def depth(self, curdepth=0, deepest=0):
+        if curdepth > deepest:
+            deepest = curdepth
+        for comment in self.children:
+            deepest = comment.depth(curdepth+1, deepest)
+        return deepest
 
 class User(Base):
     __tablename__  = "user_table"
@@ -29,8 +39,8 @@ class User(Base):
 
 class Post(Base):
     __tablename__ = "post_table"
-    id = Column(String)
-    name = Column(String, primary_key=True)
+    id = Column(Integer, primary_key = True)
+    name = Column(String)
     url = Column(String)
     upvotes = Column(Integer)
     downvotes = Column(Integer)

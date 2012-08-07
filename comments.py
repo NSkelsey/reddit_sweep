@@ -45,7 +45,7 @@ def addToDatabase(parent, subtree, i):
     if len(subComments) == 0:
         pass
         #print "List EMPTY"
-
+    w = 0
     for j in subComments:
         comment = Comment()
         comment.reddit_id = j["data"]["id"]
@@ -57,15 +57,16 @@ def addToDatabase(parent, subtree, i):
         comment.parent = parent
         comment.post_id = parent.post_id
         session.add(comment)
-
         if j["data"]["replies"] == "":
-            pass
+            comment.weight = comment.upvotes
             #print "Dict Empty"
             #print type(j["data"]["replies"])
 
         else:
             addToDatabase(comment, j["data"]["replies"], i + 1)
-    
+            comment.weight = comment.weight + comment.upvotes
+        w = comment.weight + w
+    parent.weight = w
     
     """
     text = body

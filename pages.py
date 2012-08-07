@@ -2,7 +2,7 @@ from comments import *
 from models import Post, session
 
 
-url = "http://www.reddit.com/r/Python/"
+url = "http://www.reddit.com/r/redditdev/"
 
 
 def addPostToDatabase(thread):
@@ -12,6 +12,7 @@ def addPostToDatabase(thread):
     post.upvotes =  thread["data"]["ups"]
     post.downs = thread["data"]["downs"]
     session.add(post)
+    session.commit()
     return post
 
 
@@ -20,8 +21,9 @@ def scrapeThreads(threads):
     counter = 0
     for thread in threads:
         print thread["data"]["title"], "\n"
-        sleep(1)
+        sleep(2)
         post = addPostToDatabase(thread)
+        print post.id
         scrapeThread(post)
         counter += 1
     
