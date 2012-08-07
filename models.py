@@ -9,15 +9,17 @@ Base = declarative_base()
 class Comment(Base):
     __tablename__ = "comment_table"
     id = Column(Integer, primary_key=True)
+    reddit_id = Column(String)
     upvotes = Column(Integer)
+    downvotes = Column(Integer)
     text = Column(String)
-    parent_id = Column(Integer, ForeignKey('comment_table.id'))
+    parent_id = Column(Integer, ForeignKey('comment_table.id'), nullable=True)
     children = relationship("Comment", 
             backref=backref('parent', remote_side=[id]),
                 )
     user_name = Column(String, ForeignKey("user_table.name"))
     user = relationship("User", backref=backref("comments"))
-    post_name = Column(String, ForeignKey("post_table.name"))
+    post_id = Column(String, ForeignKey("post_table.id"))
     post = relationship("Post", backref=backref("comments"))
     date_of_last_sweep = Column(DATETIME)
 
@@ -27,9 +29,11 @@ class User(Base):
 
 class Post(Base):
     __tablename__ = "post_table"
+    id = Column(String)
     name = Column(String, primary_key=True)
     url = Column(String)
     upvotes = Column(Integer)
+    downvotes = Column(Integer)
 
 
 
