@@ -2,7 +2,7 @@ from comments import *
 from models import Post, session
 
 
-url = "http://www.reddit.com/r/redditdev/"
+url = "http://www.reddit.com/r/python/"
 
 
 def addPostToDatabase(thread):
